@@ -1,21 +1,21 @@
 from sqlalchemy.orm import Session
 from app.models.booking import Booking
+from datetime import timezone
 from app.schemas.booking import BookingCreate
 
-def create_booking_service(data: BookingCreate, db: Session):
-
+def create_booking_service(data, db):
     booking = Booking(
         user_id=data.user_id,
         area_id=data.area_id,
-
         package_id=data.package_id,
         service_id=data.service_id,
         professional_id=data.professional_id,
 
-        scheduled_at=data.scheduled_at,
+        # 🔥 THIS IS THE FIX
+        scheduled_at=data.scheduled_at.astimezone(timezone.utc),
+
         total_price=data.total_price,
-        details=data.details,
-        status="pending"
+        details=data.details
     )
 
     db.add(booking)

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime, DECIMAL, Text, ForeignKey
-from datetime import datetime
+from datetime import datetime, timezone
 from app.core.database import Base
 
 class Booking(Base):
@@ -14,9 +14,14 @@ class Booking(Base):
     service_id = Column(Integer, ForeignKey("services.service_id"), nullable=True)
     professional_id = Column(Integer, ForeignKey("professionals.professional_id"), nullable=True)
 
-    scheduled_at = Column(DateTime, nullable=False)
+    # ✅ timezone-aware UTC
+    scheduled_at = Column(DateTime(timezone=True), nullable=False)
+
     status = Column(String, default="pending")
     total_price = Column(DECIMAL, nullable=False)
     details = Column(Text)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc)
+    )
