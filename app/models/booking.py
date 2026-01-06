@@ -14,7 +14,6 @@ class Booking(Base):
     service_id = Column(Integer, ForeignKey("services.service_id"), nullable=True)
     professional_id = Column(Integer, ForeignKey("professionals.professional_id"), nullable=True)
 
-    # ✅ timezone-aware UTC
     scheduled_at = Column(DateTime(timezone=True), nullable=False)
 
     status = Column(String, default="pending")

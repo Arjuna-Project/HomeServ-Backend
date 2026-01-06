@@ -11,13 +11,9 @@ router = APIRouter(
     tags=["Bookings"]
 )
 
-# ======================================================
-# CREATE BOOKING (FINAL, SINGLE SOURCE OF TRUTH)
-# ======================================================
 @router.post("/", response_model=BookingOut)
 def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
 
-    # ✅ PACKAGE BOOKING
     if data.package_id:
         if data.service_id or data.professional_id:
             raise HTTPException(
@@ -25,7 +21,6 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
                 detail="Invalid package booking"
             )
 
-    # ✅ NORMAL / EMERGENCY BOOKING
     else:
         if not data.service_id:
             raise HTTPException(
@@ -40,16 +35,10 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
 
     return create_booking_service(data, db)
 
-# ======================================================
-# GET ALL BOOKINGS (ADMIN)
-# ======================================================
 @router.get("/", response_model=list[BookingOut])
 def get_all_bookings(db: Session = Depends(get_db)):
     return db.query(Booking).all()
 
-# ======================================================
-# GET BOOKINGS BY USER
-# ======================================================
 @router.get("/user/{user_id}", response_model=list[BookingOut])
 def get_user_bookings(user_id: int, db: Session = Depends(get_db)):
     return (
@@ -59,9 +48,6 @@ def get_user_bookings(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-# ======================================================
-# GET PACKAGE BOOKINGS
-# ======================================================
 @router.get("/user/{user_id}/packages", response_model=list[BookingOut])
 def get_user_package_bookings(user_id: int, db: Session = Depends(get_db)):
     return (
@@ -74,9 +60,6 @@ def get_user_package_bookings(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-# ======================================================
-# GET NORMAL BOOKINGS
-# ======================================================
 @router.get("/user/{user_id}/normal", response_model=list[BookingOut])
 def get_user_normal_bookings(user_id: int, db: Session = Depends(get_db)):
     return (
@@ -89,9 +72,6 @@ def get_user_normal_bookings(user_id: int, db: Session = Depends(get_db)):
         .all()
     )
 
-# ======================================================
-# GET BOOKING BY ID
-# ======================================================
 @router.get("/{booking_id}", response_model=BookingOut)
 def get_booking(booking_id: int, db: Session = Depends(get_db)):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
@@ -99,9 +79,6 @@ def get_booking(booking_id: int, db: Session = Depends(get_db)):
         raise HTTPException(404, "Booking not found")
     return booking
 
-# ======================================================
-# COMPLETE JOB
-# ======================================================
 @router.put("/{booking_id}/complete")
 def complete_job(booking_id: int, db: Session = Depends(get_db)):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()
@@ -112,9 +89,6 @@ def complete_job(booking_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Job marked as completed"}
 
-# ======================================================
-# UPDATE BOOKING
-# ======================================================
 @router.put("/{booking_id}", response_model=BookingOut)
 def update_booking(
     booking_id: int,
@@ -132,9 +106,6 @@ def update_booking(
     db.refresh(booking)
     return booking
 
-# ======================================================
-# CHANGE STATUS
-# ======================================================
 @router.patch("/{booking_id}/status", response_model=BookingOut)
 def change_status(booking_id: int, status: str, db: Session = Depends(get_db)):
 
@@ -143,9 +114,6 @@ def change_status(booking_id: int, status: str, db: Session = Depends(get_db)):
 
     return update_booking_status(booking_id, status, db)
 
-# ======================================================
-# DELETE BOOKING
-# ======================================================
 @router.delete("/{booking_id}")
 def delete_booking(booking_id: int, db: Session = Depends(get_db)):
     booking = db.query(Booking).filter(Booking.booking_id == booking_id).first()

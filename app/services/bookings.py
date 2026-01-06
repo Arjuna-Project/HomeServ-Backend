@@ -11,7 +11,6 @@ def create_booking_service(data, db):
         service_id=data.service_id,
         professional_id=data.professional_id,
 
-        # 🔥 THIS IS THE FIX
         scheduled_at=data.scheduled_at.astimezone(timezone.utc),
 
         total_price=data.total_price,

@@ -1,5 +1,3 @@
-# app/services/notifications.py
-
 def send_notification(user_id: int, message: str):
     """
     Generic notification sender.
