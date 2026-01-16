@@ -27,6 +27,7 @@ def chat_with_bot(req: ChatRequest):
         },
         json={
             "model": "openrouter/auto",
+            "max-tokens":512,
             "messages": [
                 {
                     "role": "system",
