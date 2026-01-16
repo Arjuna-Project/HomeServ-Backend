@@ -13,6 +13,7 @@ from app.routers import (
     professional_auth,
     professional_dashboard,
     professional_jobs,
+    chatbot
 )
 
 app = FastAPI(title="HomeServ API")
@@ -39,6 +40,7 @@ app.include_router(contact.router)
 app.include_router(professional_auth.router)
 app.include_router(professional_dashboard.router)
 app.include_router(professional_jobs.router)
+app.include_router(chatbot.router, prefix="/api")
 
 @app.get("/")
 def root():
