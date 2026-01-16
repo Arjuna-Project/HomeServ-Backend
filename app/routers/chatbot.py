@@ -2,9 +2,6 @@ import os
 import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from dotenv import load_dotenv
-
-load_dotenv()
 
 router = APIRouter(prefix="/chat", tags=["Chatbot"])
 
