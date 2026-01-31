@@ -1,6 +1,6 @@
 import os
 import json
-import base64
+import re
 import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -97,7 +97,7 @@ Analyze the uploaded image and respond STRICTLY in JSON format like this:
   "issue": "<problem identified>",
   "service": "<service category>",
   "diy_safe": true or false,
-  "steps": ["step 1", "step 2"]  // only if diy_safe is true
+  "steps": ["step 1", "step 2"]
 }
 
 If DIY is unsafe, set diy_safe=false and do NOT include steps.
@@ -132,12 +132,14 @@ If DIY is unsafe, set diy_safe=false and do NOT include steps.
 
     ai_reply = response.json()["choices"][0]["message"]["content"]
 
+    # ✅ SAFE JSON EXTRACTION
     try:
-        ai_data = json.loads(ai_reply)
+        ai_data = extract_json(ai_reply)
     except Exception:
+        print("AI RAW RESPONSE:", ai_reply)
         return {
             "type": "error",
-            "reply": "Unable to analyze the image clearly. Please try another image."
+            "reply": "I couldn't clearly analyze this image. Please upload a clearer image."
         }
 
     # 🟢 DIY SAFE → SHOW STEPS
@@ -172,10 +174,17 @@ If DIY is unsafe, set diy_safe=false and do NOT include steps.
     }
 
 
+# -------- JSON EXTRACTION HELPER --------
+def extract_json(text: str):
+    match = re.search(r"\{[\s\S]*\}", text)
+    if not match:
+        raise ValueError("No JSON found")
+    return json.loads(match.group())
+
+
 # -------- BOOKING CREATION (MOCK) --------
 def create_booking(user_id: Optional[int], service: str, issue: str):
 
-    # 🔴 Replace this with DB insert later
     booking = {
         "user_id": user_id,
         "service": service,
