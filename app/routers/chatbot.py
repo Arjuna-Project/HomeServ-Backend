@@ -110,7 +110,7 @@ If DIY is unsafe, set diy_safe=false and do NOT include steps.
             "Content-Type": "application/json"
         },
         json={
-            "model": "openrouter/auto",
+            "model": "openai/gpt-4o-mini",
             "messages": [
                 {
                     "role": "user",
