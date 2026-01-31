@@ -164,14 +164,16 @@ If DIY is unsafe, set diy_safe=false and do NOT include steps.
         issue=ai_data.get("issue")
     )
 
+    # 🔴 DIY RISKY → JUST SHOW WARNING (NO BOOKING)
     return {
-        "type": "booking",
+        "type": "risky",
         "reply": (
-            f"⚠️ The issue appears risky for DIY.\n"
-            f"A professional booking has been created.\n"
-            f"Booking ID: {booking_id}"
+            f"⚠️ Issue identified: {ai_data.get('issue')}\n\n"
+            "This issue is risky to handle on your own.\n\n"
+            "🔧 Please book a professional through HomeServ to avoid safety hazards."
         )
     }
+
 
 
 # -------- JSON EXTRACTION HELPER --------
