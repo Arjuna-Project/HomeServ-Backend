@@ -183,6 +183,10 @@ Remember: Output ONLY valid JSON and nothing else.
 
     # 🟢 DIY SAFE → SHOW STEPS
     if ai_data.get("diy_safe") is True:
+        requirements = "\n".join(
+            [f"- {r}" for r in ai_data.get("requirements", [])]
+        )
+
         steps = "\n".join(
             [f"{i+1}. {s}" for i, s in enumerate(ai_data.get("steps", []))]
         )
@@ -191,10 +195,11 @@ Remember: Output ONLY valid JSON and nothing else.
             "type": "diy",
             "reply": (
                 f"Issue identified: {ai_data.get('issue')}\n\n"
-                f"DIY Steps:\n{steps}\n\n"
-                "⚠️ If the issue continues, you can book a professional anytime."
+                f"Requirements:\n{requirements}\n\n"
+                f"Steps:\n{steps}"
             )
         }
+
 
     # 🔴 DIY RISKY → CREATE BOOKING
     booking_id = create_booking(
