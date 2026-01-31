@@ -90,19 +90,24 @@ def handle_text(user_message: str):
 def handle_image(req: ChatRequest):
 
     prompt = """
-You are a home service expert.
-Analyze the uploaded image and respond STRICTLY in JSON format like this:
-
-{
-  "issue": "<problem identified>",
-  "service": "<service category>",
-  "diy_safe": true or false,
-  "steps": ["step 1", "step 2"]
-}
-
-If DIY is unsafe, set diy_safe=false and do NOT include steps.
-"""
-
+    You are a home service expert.
+    
+    Analyze the uploaded image and respond STRICTLY in JSON format:
+    
+    {
+      "issue": "<problem identified>",
+      "service": "<service category>",
+      "diy_safe": true or false,
+      "requirements": ["tool/material 1", "tool/material 2"],
+      "steps": ["detailed step 1", "detailed step 2", "detailed step 3"]
+    }
+    
+    Rules:
+    - If diy_safe is true, include BOTH requirements and steps.
+    - Steps must be clear and slightly elaborated.
+    - If diy_safe is false, do NOT include requirements or steps.
+    """
+    
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={
