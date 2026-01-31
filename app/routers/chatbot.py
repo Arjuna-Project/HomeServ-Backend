@@ -107,7 +107,7 @@ def handle_image(req: ChatRequest):
     - Steps must be clear and slightly elaborated.
     - If diy_safe is false, do NOT include requirements or steps.
     """
-    
+
     response = requests.post(
         "https://openrouter.ai/api/v1/chat/completions",
         headers={
