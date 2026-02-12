@@ -1,35 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import hashlib, os
 
 from app.schemas.user import UserCreate, UserOut, UserLogin
 from app.models.user import User
 from app.core.database import get_db
+from app.core.security import hash_password, verify_password
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-
-def hash_password(password: str) -> str:
-    salt = os.urandom(16)
-    pwd_hash = hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode(),
-        salt,
-        100_000
-    )
-    return salt.hex() + ":" + pwd_hash.hex()
-
-
-def verify_password(password: str, stored: str) -> bool:
-    salt_hex, hash_hex = stored.split(":")
-    salt = bytes.fromhex(salt_hex)
-    pwd_hash = hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode(),
-        salt,
-        100_000
-    )
-    return pwd_hash.hex() == hash_hex
-
 
 @router.post("/signup", response_model=UserOut)
 def signup(user_data: UserCreate, db: Session = Depends(get_db)):

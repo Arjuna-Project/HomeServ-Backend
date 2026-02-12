@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.professionals import Professional
 from app.schemas.professional_auth import ProfessionalLogin
+from app.core.security import verify_password
 
 router = APIRouter(prefix="/professionals", tags=["Professional Auth"])
 
@@ -21,7 +22,7 @@ def professional_login(
     if not professional:
         raise HTTPException(status_code=404, detail="Professional not found")
 
-    if professional.password != data.password:
+    if not verify_password(data.password, professional.password_hash):
         raise HTTPException(status_code=401, detail="Invalid password")
 
     return {
